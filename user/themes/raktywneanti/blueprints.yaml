@@ -1,0 +1,13 @@
+name: Raktywne Antimatter
+version: 0.1.0
+description: RA theme using antimatter
+icon: rebel
+author:
+  name: Technodruid Maksymilian
+  email: maksymilian@paga.gg
+homepage: https://github.com/technodruid-maksymilian/grav-theme-raktywne-antimatter
+demo: http://demo.yoursite.com
+keywords: grav, theme, etc
+bugs: https://github.com/technodruid-maksymilian/grav-theme-raktywne-antimatter/issues
+readme: https://github.com/technodruid-maksymilian/grav-theme-raktywne-antimatter/blob/develop/README.md
+license: MIT

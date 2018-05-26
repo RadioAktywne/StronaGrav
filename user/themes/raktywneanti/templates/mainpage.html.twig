@@ -1,0 +1,154 @@
+{% extends 'partials/base.html.twig' %}
+
+{# KOLEKCJE ============================= #}
+
+{% set plytatygodnia = page.collection({'items': {'@page.children': '/radio/plytatygodnia'},
+			   	        'order': {'by': 'date', 'dir': 'desc'}}).first() %}
+
+{% set dow = date().format("D") %}
+{% set ramowka = page.collection({'items': {'@taxonomy': {'category': 'audycja', 'tag': dow}}, 
+				  'order': {'by':  'header.startaud', 'dir': 'asc'}}) %}
+
+
+					   
+				  
+{% set wydarzenia = page.collection({'items': {'@page.children': '/wydarzenia'},
+				     'dateRange': {'start': '-1 day'},
+				     'limit': '7',
+			  	     'order': {'by': 'date', 'dir': 'asc'}}) %}
+{% set aktualnosci = page.collection({'items': {'@page.children': '/radio/aktualnosci'},
+				      'limit': '6',
+				      'order': {'by': 'date', 'dir': 'desc'}}) %}
+{% set radiowcy = page.collection({'items' : {'@page.children': '/radio/radiowcy'},
+				   'order': {'by': 'random'}}) %}
+
+
+{% block content %}
+<div class="grid">
+	<div class="grid_box player-mobile">
+		<div class="grid_box_content-noflex">
+			<div class="section-title"><h2>Player</h2></div>
+			<div id="jp_container">
+				<button class="jp-play"><img src={{ url('theme://images/play.svg') }}></img></button>
+				<button class="jp-pause"><img src={{ url('theme://images/pause.svg') }}></img></button>
+				
+				<button class="jp-mute"><img src={{ url('theme://images/guosnik.svg') }}></img></button>
+				<button class="jp-unmute"><img src={{ url('theme://images/guosnik-mute.svg') }}></img></button>
+				<div class="jp-volume-bar">
+					<div class="jp-volume-bar-value"></div>
+				</div>
+			</div>	
+			<div id="rds">Teraz gramy:</br>
+				<div id="headerLiveHolder" class="jp-title"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="grid_box grid_frow">
+	<div class="grid_box_content-noflex">
+{# RAMÓWKA ============================================= #}
+	<a class="section-title" href='radio/ramowka'> <h2>Ramówka na dziś</h2> </a>
+		{% set x = 0 %}
+		{% for audycja in ramowka %}
+			<a class="audycja-ramowka
+			{% if x is divisibleby(2) %}
+			even-ramowka
+			{% endif %}
+			"
+			{% if 'powtorka' in audycja.taxonomy.category %}
+			href={{audycja.parent.link}}>
+			{% else %}	
+			href={{audycja.link}}>
+			{% endif %}
+			{{ audycja.title }}</br>
+			{{ audycja.header.startaud }} - {{ audycja.header.koniecaud }}</br>
+			</a>
+			{% set x = x+1 %}
+		{% endfor %}
+
+	</div>
+	</div>
+{# PŁYTA TYGODNIA ========================================= #}
+	<div class="grid_box aktu">
+		<div class="grid_box_content grid_frow_fix">
+			<a class="section-title" href="radio/plytatygodnia"><h2>Płyta Tygodnia</h2></a>
+			<a href={{ plytatygodnia.link }} class="grid_box_flex">
+				<div class="bg" style="background-image: url(
+			{{ plytatygodnia.media[plytatygodnia.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }}
+			); background-position: center center; width: 100%; background-size: cover;"></div>
+				<div class="box_story">
+					<div class="box_title"><h2>{{ plytatygodnia.title }}</h2></div>
+					<div class="box_lead_long"><p>{{ news.summary() }}</p></div>
+				</div>
+			</a>
+		</div>
+	</div>
+	<div class="grid_box grid_frow">
+	<div class="grid_box_content-noflex">
+
+{# WYDARZENIA ========================================= #}
+	<a href='wydarzenia' class='section-title'><h2>Wydarzenia</h2></a>
+		{% for wydarzenie in wydarzenia %}
+			<a class="wydarzenie" href={{ wydarzenie.link }}>
+			<div class="bg-wyd" style="background-image: url(
+			{{ wydarzenie.media[wydarzenie.header.display_image|first.name].display('thumbnail').cropZoom(600,				200).url() }});
+			 background-position: center center; width: 100%; background-size: cover;">		
+			<div class="wydarzenie-date">{{ date(wydarzenie.date).format("d/m/y") }} </div>
+			<div class="wydarzenie-title">{{ wydarzenie.title }} </div>
+			</div>
+			</a>
+		{% endfor %}
+	</div>
+	</div>
+
+{# AKTUALNOŚCI ========================================== #}
+<a class="grid_box_full aktualnosci_section_title" href="radio/aktualnosci">
+	<div class="grid_box_content">
+		<div class='section-title'><h2>Aktualności</h2></div>
+	</div>
+</a>
+
+
+{% for news in aktualnosci %}
+	<a class="grid_box aktu" href={{ news.link }}>
+		<div class="grid_box_content">
+			<div class="grid_box_flex">
+				<div class="bg" style="background-image: url(
+	{{ news.media[news.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }}
+	); background-position: center center; width: 100%; background-size: cover;"></div>
+				<div class="box_story">
+					<div class="box_title"><h2>{{ news.title }}</h2></div>
+					<div class="box_lead_long"><p>{{ news.summary() }}</p></div>
+					<div class="box_lead_short"><p>{{ news.summary()|truncate(150) }}</p></div>
+				</div>
+			</div>
+		</div>
+	</a>
+{% endfor %} 
+{# TEAM ======================================== #}
+	<a class="grid_box_full aktualnosci_section_title" href="radio/zespol">
+		<div class="grid_box_content">
+			<div class="section-title"><h2>Zespół</h2></div>
+		</div>
+	</a>
+</div>
+<div class="grid zespol">
+{% set x = 0 %}
+{% for ludz in radiowcy %}
+	<a class="grid_box zespol" id="team_{{ x }}" href={{ ludz.link }}> 
+		<div class="grid_box_content">
+			<div class="grid_box_flex">
+				<div class="bg" style="background-image: url(
+		{{ ludz.media[ludz.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }}
+		); background-position: center center; background-size: cover;"></div>
+				<div class="box_story">
+					<div class="box_title">{{ ludz.title }}</div>
+					<div class="box_role"><p>{{ ludz.header.rola }}</p></div>
+				</div>
+			</div>
+		</div>
+	</a>
+{% set x = x+1 %}
+{% endfor %}
+</div>
+{% endblock %}

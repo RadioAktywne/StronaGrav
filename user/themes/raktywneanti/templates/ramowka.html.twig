@@ -1,0 +1,23 @@
+{% extends 'partials/base.html.twig' %}
+
+{% set tydzien = {'Mon': 'Poniedziałek','Tue': 'Wtorek','Wed': 'Środa','Thu': 'Czwartek','Fri': 'Piątek','Sat': 'Sobota','Sun': 'Niedziela'} %}
+
+{% block content %}
+<div class="wrapper">
+	<h2>{{ page.title }}</h2>
+	<div class="audycja-ramowka">
+	{% for slug, dzien in tydzien %}
+		<h3>{{ dzien }}{{tydzien(slug)}}</h3>
+		{% set ramowka = page.collection({'items': {'@taxonomy': {'category': 'audycja', 'tag': slug }},
+						'order': {'by': 'date', 'dir': 'asc'}}) %}
+		{% for audycja in ramowka %}
+			<a href={{ audycja.link }}>
+			{{ audycja.title }}</br>
+			{{ audycja.header.startaud }} - {{ audycja.header.koniecaud }}</br>
+			</a>
+		{% endfor %}
+	{% endfor %}
+	</div>
+	
+</div>
+{% endblock %}

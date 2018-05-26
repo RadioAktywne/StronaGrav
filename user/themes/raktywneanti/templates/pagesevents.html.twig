@@ -1,0 +1,29 @@
+{% extends 'partials/base.html.twig' %}
+
+{% set collection = page.collection() %}
+
+{% block content %}
+<div class="wrapper">
+   <h2>{{ page.title }}</h2>
+{{ dzieci.lastPage.path }}
+</div>
+<div class="grid">
+{% for item in collection %}
+	<a class="grid_box" href={{ item.link }}>
+	<div class="grid_box_content">
+	<div class="bg" style="background-image: url(
+	{{ item.media[item.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }});
+	background-position: center center; width:100%; background-size: cover;">
+	<h2>{{ item.title }}</h2>
+	<h3>{{ date(item.date).format("d/m/y") }}</h3>
+	<p>{{ item.summary() }}</p>
+	<p>{{ item.summary()|truncate(150) }}</p>
+	</div>
+	</div>
+	</a>
+{% endfor %}
+</div>
+{% if config.plugins.pagination.enabled and collection.params.pagination %}
+    {% include 'partials/pagination.html.twig' with {'base_url': page.url, 'pagination': collection.params.pagination} %}
+{% endif %}
+{% endblock %}

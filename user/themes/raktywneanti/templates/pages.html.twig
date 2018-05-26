@@ -1,0 +1,32 @@
+{% extends 'partials/base.html.twig' %}
+
+{% set collection = page.collection() %}
+
+{% block content %}
+<div class="pagestemp">
+<div class="grid">
+<div class="grid_box_full aktualnosci_section_title">
+	<div class="grid_box_content">
+		<div class='section-title'><h2>{{ page.title }}</h2></div>
+	</div>
+</div>
+{% for item in collection %}
+	<a class="grid_box aktu" href={{ item.link }}>
+		<div class="grid_box_content">
+			<div class="grid_box_flex">
+			<div class="bg" style="background-image: url(
+		{{ item.media[item.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }});
+		background-position: center center; width:100%; background-size: cover;"></div>
+			<div class="box_story">
+				<div class="box_title"><h2>{{ item.title }}</h2></div>
+			</div>
+			</div>
+		</div>
+	</a>
+{% endfor %}
+</div>
+{% if config.plugins.pagination.enabled and collection.params.pagination %}
+    {% include 'partials/pagination.html.twig' with {'base_url': page.url, 'pagination': collection.params.pagination} %}
+{% endif %}
+</div>
+{% endblock %}

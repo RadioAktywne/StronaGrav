@@ -1,0 +1,13 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+<div class="wrapper">
+   <h2>{{ page.title }}</h2>
+   <p>{{ page.header.rola }}</p>
+    <div class="default-obrazek" style="float: right; background-image:url({{ page.media[page.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }});"></div>
+    {{ page.content }}
+    {% if page.header.audio_attach|length != 0 %}
+    <audio controls><source src="{{ page.media[page.header.audio_attach|first.name].url() }}"></audio>
+    {% endif %}
+</div>
+{% endblock %}

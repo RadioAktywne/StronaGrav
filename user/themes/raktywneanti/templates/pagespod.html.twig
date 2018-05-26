@@ -1,0 +1,41 @@
+{% extends 'partials/base.html.twig' %}
+
+{% set collection = page.collection() %}
+
+{% block content %}
+<div class="wrapper">
+<div class="nogrid-title">
+   <h2>{{ page.title }}</h2>
+</div>
+{{ dzieci.lastPage.path }}
+{% set x = 0 %}
+{% for item in collection %}
+	<div class="podcast">
+		<div class="podcast_content">
+			<div class="bg" style="background-image: url(
+	{{ item.media[item.header.display_image|first.name].display('thumbnail').cropZoom(600,600).url() }});
+	background-position: center center; width:100%; background-size: cover;"></div>
+			<a class="podcast_opis" href={{ item.link }}>
+				<h2>{{ item.title }}</h2>
+			</a>
+			<div id="jquery_jplayer_{{ x }}">
+				<audio id="jp_audio_{{ 0 }}" preload="none" src="{{ item.media[item.header.audio_attach|first.name].url() }}"></audio> 
+			</div>
+			<div id="jp_container_{{ x }}">
+				<button class="jp_play_{{ x }}"><img src={{ url('theme://images/play.svg') }}></img></button>
+				<button class="jp_pause_{{ x }}"></button>
+				<button class="jp_mute_{{ x }}"></button>
+				<button class="jp_unmute_{{ x }}"></button>
+				<div class="jp_volume_bar_{{ x }}">
+					<div class="jp_volume_bar_value_{{ x }}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% set x = x + 1 %}
+{% endfor %}
+{% if config.plugins.pagination.enabled and collection.params.pagination %}
+    {% include 'partials/pagination.html.twig' with {'base_url': page.url, 'pagination': collection.params.pagination} %}
+{% endif %}
+</div>
+{% endblock %}
